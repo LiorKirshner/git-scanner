@@ -1,0 +1,10 @@
+{
+  "name": "git-scanner",
+  "version": "1.0.0",
+  "description": "CLI tool to scan and manage local Git repositories",
+  "bin": {
+    "git-scan": "./scanner.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
