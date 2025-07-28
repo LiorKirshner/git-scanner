@@ -1,8 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const HISTORY_PATH = path.join(process.cwd(), ".git-scanner", "history.json");
-
+const HISTORY_PATH = path.join(__dirname, "..", "history.json");
 function loadHistory() {
   try {
     const data = fs.readFileSync(HISTORY_PATH, "utf8");
