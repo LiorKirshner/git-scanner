@@ -8,6 +8,8 @@ const findGitRepos = require("./utils/gitScanner");
 
 async function main() {
   console.clear();
+  console.log("-------------------------");
+  console.log(" ");
   const defaultPath = process.cwd();
   const inputPath = await ask(
     `📁 Enter folder to scan [default: current directory]: `
@@ -15,6 +17,7 @@ async function main() {
   const baseDir = inputPath.trim() === "" ? defaultPath : inputPath.trim();
 
   while (true) {
+    console.clear();
     console.log(`\n🔍 Scanning: ${baseDir}...\n`);
     const repos = await findGitRepos(baseDir);
 
@@ -88,50 +91,57 @@ async function main() {
       const { repo, statusSymbol } = nonGreenRepos[i];
       if (repo !== selected) continue;
       console.log(`\nOptions for repo: ${repo}`);
-      if (statusSymbol === "🟡") {
-        const action = await ask("Choose action: [1] Push changes, [2] Skip: ");
-        switch (action.trim()) {
-          case "1":
-            const commitMsg = await ask("📝 Enter commit message: ");
-            try {
-              execSync(
-                `git add . && git commit -m "${commitMsg}" && git push`,
-                {
-                  cwd: repo,
-                  stdio: "inherit",
-                }
-              );
-              console.log("✅ Changes pushed successfully.");
-            } catch (e) {
-              console.log("❌ Failed to push changes.");
-            }
-            break;
-          case "2":
-            console.log("⏭ Skipped.");
-            break;
-          default:
-            console.log("❌ Invalid choice. Skipped.");
-        }
-      } else if (statusSymbol === "🔴") {
-        const action = await ask("Choose action: [1] Retry access, [2] Skip: ");
-        switch (action.trim()) {
-          case "1":
-            try {
-              execSync("git status", {
-                cwd: repo,
-                encoding: "utf8",
-              });
-              console.log("✅ Access successful.");
-            } catch (e) {
-              console.log("❌ Still unable to access repo.");
-            }
-            break;
-          case "2":
-            console.log("⏭ Skipped.");
-            break;
-          default:
-            console.log("❌ Invalid choice. Skipped.");
-        }
+      console.log("Choose action:");
+      console.log("[1] Push changes (add + commit + push)");
+      console.log("[2] Add all changes (git add .)");
+      console.log("[3] Restore changes (git restore .)");
+      console.log("[4] Commit (only if already added)");
+      console.log("\x1b[31m[Enter] Cancel\x1b[0m"); // Red colored cancel
+      const action = await ask("> ");
+
+      switch (action.trim()) {
+        case "1":
+          const commitMsg = await ask("📝 Enter commit message: ");
+          try {
+            execSync(`git add . && git commit -m "${commitMsg}" && git push`, {
+              cwd: repo,
+              stdio: "inherit",
+            });
+            console.log("✅ Changes pushed successfully.");
+          } catch (e) {
+            console.log("❌ Failed to push changes.");
+          }
+          break;
+        case "2":
+          try {
+            execSync(`git add .`, { cwd: repo, stdio: "inherit" });
+            console.log("✅ Changes added.");
+          } catch (e) {
+            console.log("❌ Failed to add changes.");
+          }
+          break;
+        case "3":
+          try {
+            execSync(`git restore .`, { cwd: repo, stdio: "inherit" });
+            console.log("🔄 Changes restored.");
+          } catch (e) {
+            console.log("❌ Failed to restore.");
+          }
+          break;
+        case "4":
+          const msg = await ask("📝 Enter commit message: ");
+          try {
+            execSync(`git commit -m "${msg}"`, {
+              cwd: repo,
+              stdio: "inherit",
+            });
+            console.log("✅ Committed.");
+          } catch (e) {
+            console.log("❌ Commit failed.");
+          }
+          break;
+        default:
+          console.log("❌ Cancelled.");
       }
     }
 
