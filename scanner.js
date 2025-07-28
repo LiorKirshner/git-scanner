@@ -7,6 +7,7 @@ const { ask, rl } = require("./utils/ask");
 const findGitRepos = require("./utils/gitScanner");
 
 async function main() {
+  console.clear();
   const defaultPath = process.cwd();
   const inputPath = await ask(
     `📁 Enter folder to scan [default: current directory]: `
@@ -22,6 +23,7 @@ async function main() {
       break;
     }
 
+    const reposWithStatus = [];
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i];
       let statusSymbol = "🟢";
@@ -35,6 +37,17 @@ async function main() {
       } catch {
         statusSymbol = "🔴";
       }
+      reposWithStatus.push({ repo, statusSymbol });
+    }
+
+    // Sort repos: green (🟢) first, then yellow (🟡), then red (🔴)
+    reposWithStatus.sort((a, b) => {
+      const order = { "🟢": 0, "🟡": 1, "🔴": 2 };
+      return order[a.statusSymbol] - order[b.statusSymbol];
+    });
+
+    for (let i = 0; i < reposWithStatus.length; i++) {
+      const { repo, statusSymbol } = reposWithStatus[i];
       console.log(`${statusSymbol} 📁 ${i + 1}. ${repo}`);
     }
 
@@ -48,12 +61,12 @@ async function main() {
     );
     const index = parseInt(choice.trim(), 10) - 1;
 
-    if (isNaN(index) || !repos[index]) {
+    if (isNaN(index) || !reposWithStatus[index]) {
       console.log("👋 Bye.");
       break;
     }
 
-    const selected = repos[index];
+    const selected = reposWithStatus[index].repo;
     console.log(`\n➡️ Selected: ${selected}\n`);
     try {
       const result = execSync("git status", {
@@ -64,6 +77,61 @@ async function main() {
       console.log(result);
     } catch (e) {
       console.log("❌ Failed to run git status");
+    }
+
+    // For repos that are not green, display numbered options for user actions
+    const nonGreenRepos = reposWithStatus.filter(
+      (r) => r.statusSymbol === "🟡" || r.statusSymbol === "🔴"
+    );
+
+    for (let i = 0; i < nonGreenRepos.length; i++) {
+      const { repo, statusSymbol } = nonGreenRepos[i];
+      if (repo !== selected) continue;
+      console.log(`\nOptions for repo: ${repo}`);
+      if (statusSymbol === "🟡") {
+        const action = await ask("Choose action: [1] Push changes, [2] Skip: ");
+        switch (action.trim()) {
+          case "1":
+            try {
+              execSync(
+                'git add . && git commit -m "Auto-commit from git-scan" && git push',
+                {
+                  cwd: repo,
+                  stdio: "inherit",
+                }
+              );
+              console.log("✅ Changes pushed successfully.");
+            } catch (e) {
+              console.log("❌ Failed to push changes.");
+            }
+            break;
+          case "2":
+            console.log("⏭ Skipped.");
+            break;
+          default:
+            console.log("❌ Invalid choice. Skipped.");
+        }
+      } else if (statusSymbol === "🔴") {
+        const action = await ask("Choose action: [1] Retry access, [2] Skip: ");
+        switch (action.trim()) {
+          case "1":
+            try {
+              execSync("git status", {
+                cwd: repo,
+                encoding: "utf8",
+              });
+              console.log("✅ Access successful.");
+            } catch (e) {
+              console.log("❌ Still unable to access repo.");
+            }
+            break;
+          case "2":
+            console.log("⏭ Skipped.");
+            break;
+          default:
+            console.log("❌ Invalid choice. Skipped.");
+        }
+      }
     }
 
     const action = await ask(
