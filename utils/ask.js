@@ -5,7 +5,8 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const ask = (question) =>
-  new Promise((resolve) => rl.question(question, resolve));
+function ask(query) {
+  return new Promise((resolve) => rl.question(query, resolve));
+}
 
 module.exports = { ask, rl };

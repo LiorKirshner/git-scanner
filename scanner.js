@@ -92,9 +92,10 @@ async function main() {
         const action = await ask("Choose action: [1] Push changes, [2] Skip: ");
         switch (action.trim()) {
           case "1":
+            const commitMsg = await ask("📝 Enter commit message: ");
             try {
               execSync(
-                'git add . && git commit -m "Auto-commit from git-scan" && git push',
+                `git add . && git commit -m "${commitMsg}" && git push`,
                 {
                   cwd: repo,
                   stdio: "inherit",
