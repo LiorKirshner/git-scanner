@@ -45,6 +45,8 @@ async function main() {
     }
 
     const reposWithStatus = [];
+    let baseDirStatus = "🟢";
+
     for (let i = 0; i < repos.length; i++) {
       const repo = repos[i];
       let statusSymbol = "🟢";
@@ -58,15 +60,24 @@ async function main() {
       } catch {
         statusSymbol = "🔴";
       }
-      const entry = {
-        path: repo,
-        date: new Date().toISOString(),
-        status: statusSymbol,
-        changes: [],
-      };
-      updateHistoryEntry(entry);
+
+      if (repo === require("path").resolve(baseDir)) {
+        baseDirStatus = statusSymbol;
+      }
+
       reposWithStatus.push({ repo, statusSymbol });
     }
+
+    // Only update history once for baseDir itself
+    updateHistoryEntry(
+      {
+        path: baseDir,
+        date: new Date().toISOString(),
+        status: baseDirStatus,
+        changes: [],
+      },
+      baseDir
+    );
 
     // Sort repos: green (🟢) first, then yellow (🟡), then red (🔴)
     reposWithStatus.sort((a, b) => {

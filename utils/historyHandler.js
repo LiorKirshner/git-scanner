@@ -17,15 +17,36 @@ function saveHistory(entries) {
   fs.writeFileSync(HISTORY_PATH, JSON.stringify(entries, null, 2));
 }
 
-function updateHistoryEntry(newEntry) {
+function updateHistoryEntry(newEntry, baseDir) {
   const history = loadHistory();
-  const index = history.findIndex((e) => e.path === newEntry.path);
-  if (index !== -1) {
-    history[index] = newEntry;
-  } else {
-    history.push(newEntry);
+  const resolvedNewPath = path.resolve(newEntry.path);
+  const resolvedBaseDir = baseDir ? path.resolve(baseDir) : null;
+
+  // Check if entry already exists
+  const existingIndex = history.findIndex(
+    (e) => path.resolve(e.path) === resolvedNewPath
+  );
+
+  if (existingIndex !== -1) {
+    const existing = history[existingIndex];
+    if (existing.status !== newEntry.status) {
+      history[existingIndex] = {
+        ...existing,
+        ...newEntry,
+      };
+      saveHistory(history);
+    }
+    return;
   }
-  saveHistory(history);
+
+  // Only save if it's the exact baseDir or the status is not green
+  if (
+    (resolvedBaseDir && resolvedNewPath === resolvedBaseDir) ||
+    newEntry.status !== "🟢"
+  ) {
+    history.push(newEntry);
+    saveHistory(history);
+  }
 }
 
 module.exports = {
