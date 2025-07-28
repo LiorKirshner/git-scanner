@@ -1,85 +1,43 @@
-# Git Scanner
-
-Git Scanner הוא כלי המאפשר סריקה ואנליזה של מאגרי Git לצרכים שונים, כגון איתור שינויים, ניתוח היסטוריית קומיטים, או בדיקת קונפיגורציות.
-
-## תיאור
-
-כלי זה נועד לספק דרך פשוטה ויעילה לסרוק מאגרי Git, להפיק מידע רלוונטי, ולעזור למפתחים ולמנהלי מערכות לקבל החלטות מבוססות על נתוני היסטוריית הקוד.
-
-## התקנה
-
-כדי להתקין את Git Scanner, יש לבצע את השלבים הבאים:
-
-1. וודא שיש לך Python 3.7 ומעלה מותקן במערכת.
-2. הורד את קוד המקור מהמאגר.
-3. התקן את התלויות באמצעות הפקודה:
-
-```
-pip install -r requirements.txt
-```
-
-## שימוש
-
-להריץ את הכלי, השתמש בפקודה הבאה:
-
-```
-python git_scanner.py [options]
-```
-
-אפשרויות נפוצות:
-
-- `--repo PATH` – נתיב למאגר Git לסריקה.
-- `--output FILE` – קובץ לפלט התוצאות.
-- `--help` – הצגת עזרה.
-
-## הערות
-
-- ודא שהנתיב למאגר Git תקין ושהמשתמש בעל הרשאות קריאה.
-- הכלי תומך רק במאגרי Git מקומיים.
-
-## רישיון
-
-Git Scanner מופץ תחת רישיון MIT. עיין בקובץ LICENSE למידע נוסף.
-
 # Git Scanner CLI Tool
 
-Git Scanner is a command-line utility for scanning and analyzing local Git repositories. It helps developers and system administrators gain insights into repository history, detect changes, and generate reports based on repository data.
-
-## Description
-
-Git Scanner provides an efficient way to extract information from Git repositories, such as commit history, file changes, and configuration analysis. It is designed to assist in making informed decisions based on codebase history and repository structure.
+Git Scanner is a Node.js command-line utility designed to scan and analyze local Git repositories. It provides insights into repository history, detects changes, and generates reports to help developers and system administrators better understand their codebase.
 
 ## Installation
 
-To install Git Scanner, follow these steps:
+To install Git Scanner globally on your system, run the following command in the root directory of the project:
 
-1. Ensure you have Python 3.7 or higher installed on your system.
-2. Clone or download the source code from this repository.
-3. Install the required dependencies:
+```bash
+npm install -g .
+```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+This will make the `git-scan` command available globally.
 
 ## Usage
 
 Run the tool using the following command:
 
 ```bash
-python git_scanner.py [options]
+git-scan
 ```
 
-### Common Options
+The CLI will prompt you interactively to select options such as:
 
-- `--repo PATH` &nbsp;&nbsp;&nbsp;&nbsp;Path to the local Git repository to scan.
-- `--output FILE` &nbsp;File to write the scan results.
-- `--help` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show help message and available options.
+- The path to the local Git repository you want to scan.
+- The type of analysis or report you want to generate.
+- Output preferences (e.g., console output or saving to a file).
+
+Follow the on-screen prompts to configure and execute your scan.
 
 ## Notes
 
-- Ensure the provided repository path is valid and that you have read permissions for the repository.
-- Git Scanner supports scanning only local Git repositories (not remote URLs).
+- Ensure the repository path you provide is a valid local Git repository.
+- The tool requires Node.js to be installed on your system.
+- Git Scanner currently supports scanning only local repositories and does not support remote URLs.
 
 ## License
 
-Git Scanner is released under the MIT License. See the [LICENSE](LICENSE) file for more information.
+Git Scanner is released under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Disclaimer
+
+This tool is provided "as is" without warranty of any kind. Use it at your own risk. The authors are not responsible for any damage or data loss that may occur through its use.
