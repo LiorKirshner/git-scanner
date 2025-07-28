@@ -33,6 +33,16 @@ Git Scanner is a cross-platform Node.js command-line utility for scanning and ma
 
 > Now you can run `git-scan` from any terminal window.
 
+### 🔧 Local Usage (Alternative)
+
+You can also run Git Scanner locally without installing globally:
+
+```bash
+node scanner.js
+```
+
+> Make sure you're inside the `git-scanner` directory.
+
 ---
 
 ## ▶️ Usage
@@ -69,7 +79,7 @@ git-scan
 ## 👨‍💻 Created By
 
 Made with ❤️ by [Lior Kirshner](https://kirshner.me)  
-[https://github.com/LiorKirshner/git-scanner](https://github.com/LiorKirshner/git-scanner)
+[https://kirshner.me](https://kirshner.me)
 
 ---
 
