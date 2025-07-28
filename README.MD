@@ -19,12 +19,12 @@ Git Scanner is a cross-platform Node.js command-line utility for scanning and ma
 
 ## 📦 Installation
 
-1. Clone the repository:
+Clone the repository:
 
-   ```bash
-   git clone git@github.com:LiorKirshner/git-scanner.git
-   cd git-scanner
-   ```
+```bash
+git clone https://github.com/LiorKirshner/git-scanner.git
+cd git-scanner
+```
 
 2. Install globally:
    ```bash
