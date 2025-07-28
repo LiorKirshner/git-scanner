@@ -6,16 +6,35 @@ const { execSync } = require("child_process");
 const { ask, handleRepo, rl, close } = require("./utils/ask.js");
 const findGitRepos = require("./utils/gitScanner");
 const { updateHistoryEntry } = require("./utils/historyHandler");
+const { loadHistory } = require("./utils/historyHandler");
 
 async function main() {
   console.clear();
+  // Show recent scan locations (history)
+  const history = loadHistory().slice(-3).reverse(); // last 3 runs, latest first
+  let baseDir;
+  if (history.length > 0) {
+    console.log("📜 Recent scan locations:");
+    history.forEach((entry, index) => {
+      console.log(`[${index + 1}] ${entry.path} (${entry.status})`);
+    });
+    const histChoice = await ask(
+      "\n🔁 Choose a location to re-scan (1-3) or press Enter to choose manually: "
+    );
+    const histIndex = parseInt(histChoice.trim(), 10);
+    if (histIndex >= 1 && histIndex <= history.length) {
+      baseDir = history[histIndex - 1].path;
+    }
+  }
   console.log("-------------------------");
   console.log(" ");
   const defaultPath = process.cwd();
-  const inputPath = await ask(
-    `📁 Enter folder to scan [default: current directory]: `
-  );
-  const baseDir = inputPath.trim() === "" ? defaultPath : inputPath.trim();
+  if (!baseDir) {
+    const inputPath = await ask(
+      `📁 Enter folder to scan [default: current directory]: `
+    );
+    baseDir = inputPath.trim() === "" ? defaultPath : inputPath.trim();
+  }
 
   while (true) {
     console.clear();
