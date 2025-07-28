@@ -14,6 +14,7 @@ Git Scanner is a cross-platform Node.js command-line utility for scanning and ma
 - 🔄 Actions: `add`, `commit`, `push`, `restore`, `skip`
 - 🔁 Stays running until the user exits
 - ✅ Confirmation prompts for sensitive actions
+- ⚡ Asynchronous scanning for improved performance
 
 ---
 
@@ -48,10 +49,13 @@ node scanner.js
 ## ▶️ Usage
 
 ```bash
-git-scan
+git-scan [path] [--depth=N]
 ```
 
-1. Choose the folder you want to scan (defaults to current working directory).
+- **path** - directory to scan (defaults to the current working directory)
+- **--depth** - limit recursion depth (default: unlimited)
+
+1. Choose the folder you want to scan or provide it directly as the first argument.
 2. Git Scanner will recursively detect all Git repositories.
 3. It will group and display them by status:
    - 🟢 Clean
