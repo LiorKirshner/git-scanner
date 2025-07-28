@@ -3,7 +3,8 @@
 const path = require("path");
 const fs = require("fs");
 const { execSync } = require("child_process");
-const { ask, rl } = require("./utils/ask");
+const { rl } = require("readline");
+const { ask } = require("./utils/ask.js");
 const findGitRepos = require("./utils/gitScanner");
 
 async function main() {
@@ -146,7 +147,7 @@ async function main() {
     }
 
     const action = await ask(
-      "Choose action: [1] Show git status, [2] Remove .git, [3] Delete folder, [Enter] Cancel: "
+      "Choose action: [1] Show git status, [2] Remove .git, [Enter] Cancel: "
     );
 
     switch (action.trim()) {
@@ -164,23 +165,18 @@ async function main() {
         break;
 
       case "2":
+        const confirm = await ask(
+          "\x1b[31m⚠️ Are you sure you want to remove the .git folder? (yes/no): \x1b[0m"
+        );
+        if (confirm.toLowerCase() !== "yes") {
+          console.log("❌ Cancelled.");
+          break;
+        }
         fs.rmSync(path.join(selected, ".git"), {
           recursive: true,
           force: true,
         });
         console.log("✅ .git folder removed.");
-        break;
-
-      case "3":
-        const confirm = await ask(
-          "⚠️ Are you sure you want to delete the entire folder? (yes/no): "
-        );
-        if (confirm.toLowerCase() === "yes") {
-          fs.rmSync(selected, { recursive: true, force: true });
-          console.log("🗑 Folder deleted.");
-        } else {
-          console.log("❌ Cancelled.");
-        }
         break;
 
       default:
