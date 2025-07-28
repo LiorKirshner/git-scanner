@@ -1,41 +1,10 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
 const path = require("path");
-const readline = require("readline");
+const fs = require("fs");
 const { execSync } = require("child_process");
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-const ask = (q) => new Promise((res) => rl.question(q, res));
-
-async function findGitRepos(baseDir) {
-  const repos = [];
-
-  function search(dir) {
-    try {
-      const files = fs.readdirSync(dir, { withFileTypes: true });
-      for (const file of files) {
-        if (file.isDirectory()) {
-          const fullPath = path.join(dir, file.name);
-          if (file.name === ".git") {
-            repos.push(path.dirname(fullPath));
-          } else {
-            search(fullPath);
-          }
-        }
-      }
-    } catch (err) {
-      // ignore access errors
-    }
-  }
-
-  search(baseDir);
-  return repos;
-}
+const { ask, rl } = require("./utils/ask");
+const findGitRepos = require("./utils/gitScanner");
 
 async function main() {
   const defaultPath = process.cwd();
