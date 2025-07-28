@@ -55,7 +55,18 @@ async function main() {
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
-    console.log(`📁 ${i + 1}. ${repo}`);
+    let statusSymbol = "🟢";
+    try {
+      const status = execSync("git status --porcelain", {
+        cwd: repo,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      });
+      if (status.trim()) statusSymbol = "🟡";
+    } catch {
+      statusSymbol = "🔴";
+    }
+    console.log(`${statusSymbol} 📁 ${i + 1}. ${repo}`);
   }
 
   const choice = await ask(
