@@ -66,4 +66,8 @@ async function handleRepo(repo) {
   }
 }
 
-module.exports = { ask, handleRepo, rl };
+function close() {
+  rl.close();
+}
+
+module.exports = { ask, handleRepo, rl, close };

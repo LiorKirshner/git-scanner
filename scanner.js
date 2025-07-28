@@ -3,8 +3,7 @@
 const path = require("path");
 const fs = require("fs");
 const { execSync } = require("child_process");
-const { rl } = require("readline");
-const { ask } = require("./utils/ask.js");
+const { ask, handleRepo, rl, close } = require("./utils/ask.js");
 const findGitRepos = require("./utils/gitScanner");
 
 async function main() {
@@ -67,6 +66,9 @@ async function main() {
 
     if (isNaN(index) || !reposWithStatus[index]) {
       console.log("👋 Bye.");
+      const { close } = require("./utils/ask.js");
+      close();
+      console.log("\n💡 You may now continue using the terminal.\n");
       break;
     }
 
@@ -146,45 +148,8 @@ async function main() {
       }
     }
 
-    const action = await ask(
-      "Choose action: [1] Show git status, [2] Remove .git, [Enter] Cancel: "
-    );
-
-    switch (action.trim()) {
-      case "1":
-        try {
-          const result = execSync("git status", {
-            cwd: selected,
-            encoding: "utf8",
-          });
-          console.log("\n📄 Git status:\n");
-          console.log(result);
-        } catch (e) {
-          console.log("❌ Failed to run git status");
-        }
-        break;
-
-      case "2":
-        const confirm = await ask(
-          "\x1b[31m⚠️ Are you sure you want to remove the .git folder? (yes/no): \x1b[0m"
-        );
-        if (confirm.toLowerCase() !== "yes") {
-          console.log("❌ Cancelled.");
-          break;
-        }
-        fs.rmSync(path.join(selected, ".git"), {
-          recursive: true,
-          force: true,
-        });
-        console.log("✅ .git folder removed.");
-        break;
-
-      default:
-        console.log("❌ Cancelled.");
-    }
+    await handleRepo(selected);
   }
-
-  rl.close();
 }
 
 main();
