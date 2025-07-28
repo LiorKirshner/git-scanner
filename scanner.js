@@ -5,6 +5,7 @@ const fs = require("fs");
 const { execSync } = require("child_process");
 const { ask, handleRepo, rl, close } = require("./utils/ask.js");
 const findGitRepos = require("./utils/gitScanner");
+const { updateHistoryEntry } = require("./utils/historyHandler");
 
 async function main() {
   console.clear();
@@ -41,6 +42,12 @@ async function main() {
         statusSymbol = "🔴";
       }
       reposWithStatus.push({ repo, statusSymbol });
+      updateHistoryEntry({
+        path: repo,
+        date: new Date().toISOString(),
+        status: statusSymbol,
+        changes: [], // לעתיד
+      });
     }
 
     // Sort repos: green (🟢) first, then yellow (🟡), then red (🔴)

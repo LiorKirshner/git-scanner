@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/Users/liorkirshner/Projects/project1",
+    "date": "2025-07-28T12:31:00.000Z",
+    "status": "🟡",
+    "changes": ["modified: index.js", "new file: README.md"]
+  },
+  {
+    "path": "/Users/liorkirshner/Projects/project2",
+    "date": "2025-07-27T14:12:00.000Z",
+    "status": "🟢",
+    "changes": []
+  }
+]
