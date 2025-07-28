@@ -41,13 +41,14 @@ async function main() {
       } catch {
         statusSymbol = "🔴";
       }
-      reposWithStatus.push({ repo, statusSymbol });
-      updateHistoryEntry({
+      const entry = {
         path: repo,
         date: new Date().toISOString(),
         status: statusSymbol,
-        changes: [], // לעתיד
-      });
+        changes: [],
+      };
+      updateHistoryEntry(entry);
+      reposWithStatus.push({ repo, statusSymbol });
     }
 
     // Sort repos: green (🟢) first, then yellow (🟡), then red (🔴)
