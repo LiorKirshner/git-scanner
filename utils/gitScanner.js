@@ -1,25 +1,26 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs/promises');
+const path = require('path');
 
-function findGitRepos(dir) {
-  let results = [];
-  const files = fs.readdirSync(dir, { withFileTypes: true });
+async function findGitRepos(dir, depth = Infinity) {
+  const results = [];
+  if (depth < 0) return results;
 
-  if (files.find((f) => f.isDirectory() && f.name === ".git")) {
+  let files;
+  try {
+    files = await fs.readdir(dir, { withFileTypes: true });
+  } catch {
+    return results; // skip directories we cannot read
+  }
+
+  if (files.some((f) => f.isDirectory() && f.name === '.git')) {
     results.push(dir);
   }
 
   for (const file of files) {
-    if (
-      file.isDirectory() &&
-      file.name !== ".git" &&
-      file.name !== "node_modules"
-    ) {
-      try {
-        results = results.concat(findGitRepos(path.join(dir, file.name)));
-      } catch (e) {
-        // silently skip folders that can't be accessed
-      }
+    if (file.isDirectory() && file.name !== '.git' && file.name !== 'node_modules') {
+      const subDir = path.join(dir, file.name);
+      const subResults = await findGitRepos(subDir, depth - 1);
+      results.push(...subResults);
     }
   }
 
