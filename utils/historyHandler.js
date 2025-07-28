@@ -30,7 +30,7 @@ function updateHistoryEntry(newEntry) {
 }
 
 module.exports = {
+  updateHistoryEntry,
   loadHistory,
   saveHistory,
-  updateHistoryEntry,
 };
